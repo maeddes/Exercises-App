@@ -13,4 +13,11 @@ spec:
     spec:
       containers:
       - name: todobackend
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: dev
+        - name: POSTGRES_HOST
+          value: postgresdb
         image: maeddes/todobackend:v0.1
+        imagePullPolicy: Always
+      restartPolicy: Always
