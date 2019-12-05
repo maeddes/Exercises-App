@@ -1,6 +1,7 @@
 package io.novatec.todobackend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.repository.CrudRepository;
@@ -15,8 +16,41 @@ import java.util.List;
 @RestController
 public class TodobackendApplication {
 
+	@Value("${CF_INSTANCE_GUID:not_set}")
+	String cfInstance;
+
+	@Value("${HOSTNAME:not_set}")
+	String hostname;
+
+	@Value("${spring.profiles.active: none}")
+	String profile;
+
 	@Autowired
 	TodoRepository todoRepository;
+
+	private String getInstanceId() {
+
+		if (!hostname.equals("not_set"))
+			return hostname;
+		if (!cfInstance.equals("not_set"))
+			return cfInstance;
+		return "probably localhost";
+
+	}
+
+	@GetMapping("/hello")
+	String hello() {
+
+		return getInstanceId() + " Hallo, Welt ! ";
+
+	}
+
+	@GetMapping("/fail")
+	String fail() {
+
+		System.exit(1);
+		return "fixed!";
+	}
 
 	@GetMapping("/todos/")
 	List<String> getTodos(){
